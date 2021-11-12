@@ -1,16 +1,14 @@
 package com.school.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,12 +31,10 @@ public class RedSocial implements Serializable {
 
 	private String icono;
 	
-	@JsonBackReference
-	@OneToOne(mappedBy = "redSocial")
-	private AlumnoRRSS alumnoRRSS;
+	@OneToMany(mappedBy = "redSocial")
+	private List<AlumnoRRSS> listaRedes;
 
-	@JsonBackReference
-	@OneToOne(mappedBy = "redSocial")
-	private ProfesorRRSS profesorRRSS;
+	@OneToMany(mappedBy = "profesor")
+	private List<ProfesorRRSS> redesSocialProfesor;
 
 }

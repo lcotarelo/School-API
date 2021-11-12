@@ -3,9 +3,12 @@ package com.school.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.print.attribute.standard.Media;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.school.error.CustomError;
 import com.school.model.Alumno;
 import com.school.model.AlumnoRRSS;
+import com.school.model.Curso;
 import com.school.service.AlumnoService;
 
 @RestController
@@ -52,24 +56,23 @@ public class AlumnoController {
 	}
 
 	// Post
-	@PostMapping(value="/api/alumnos")
-	public ResponseEntity<Alumno> addAlumno(
-			@RequestBody Alumno alumno,
-			@RequestBody List<AlumnoRRSS> alumnoRRSS,
-			UriComponentsBuilder uriComponentsBuilder) {
+	@PostMapping(value = "/api/alumnos",
+			consumes = { MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_ATOM_XML_VALUE},
+			produces = {MediaType.APPLICATION_JSON_VALUE , MediaType.APPLICATION_ATOM_XML_VALUE})
+	public ResponseEntity<?> addAlumno(
+			@RequestBody Alumno alumno) {
 		try {
+			System.err.println("Antes de crear");
 			alumnoService.create(alumno);
-			alumno.setRedesSocialAlumno(alumnoRRSS);
-			alumno.setCursos(null);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setLocation(
-					uriComponentsBuilder.path("/v1/api/alumnos/{id}").buildAndExpand(alumno.getId_Alumno()).toUri());
+			System.err.println("Creado");
 			return new ResponseEntity<Alumno>(alumno, HttpStatus.CREATED);
 		} catch (Exception e) {
-			String mensaje = "Error: " + e.getMessage() + e.getMessage();
+			String mensaje = "Error: " + e.getMessage();
 			return new ResponseEntity(mensaje, HttpStatus.CONFLICT);
 		}
 	}
+	
+	
 
 	// Ver un registro con por ID
 	@GetMapping(value = "/api/alumnos/{id}")

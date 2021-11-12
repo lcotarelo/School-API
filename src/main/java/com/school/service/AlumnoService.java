@@ -19,13 +19,13 @@ public class AlumnoService implements AlumnoDAO {
 
 	@Override
 	public void create(Alumno alumno) throws Exception {
-		if (alumno.getNombre() == null || alumno.getEmail() == null || alumno.getDomicilio() == null
-				|| alumno.getDni() == null) {
+		if(alumno == null) {
+			throw new Exception("No se ha enviado el alumno");
+		}
+		if (alumno.getNombre().equals(null) || alumno.getEmail().equals(null) || alumno.getDomicilio().equals(null)
+				|| alumno.getDni().equals(null)) {
 			throw new Exception("Los campos no pueden estar vacios");
 		}
-//		Alumno nuevoAlumno = new Alumno();
-//		nuevoAlumno.setCursos(null);
-//		nuevoAlumno.setRedesSocialAlumno(null);
 		alumnoRepository.insertWithEntityManager(alumno);
 	}
 

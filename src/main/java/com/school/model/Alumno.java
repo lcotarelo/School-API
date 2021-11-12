@@ -33,12 +33,11 @@ public class Alumno extends Persona implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id_Alumno;
 
-	@JsonManagedReference
 	@OneToMany(mappedBy = "alumno")
-	private List<AlumnoRRSS> redesSocialAlumno;
+	private List<AlumnoRRSS> listaRedes;
 
-	@JsonManagedReference(value="AlumnoCurso")
 	@ManyToMany
+	@JsonManagedReference
 	private List<Curso> cursos = new ArrayList<>();
 
 }
