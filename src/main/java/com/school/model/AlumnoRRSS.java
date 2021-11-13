@@ -31,13 +31,13 @@ public class AlumnoRRSS {
 	private String nickname;
 
 	@ManyToOne
-	@JsonBackReference//Indico que es la referencia de retorno(evitando ciclo infinito)
-	@JoinColumn(name = "id_Alumno", insertable = true, nullable = false, updatable = false)
+	@JsonBackReference(value="alumno")
+	@JoinColumn(name = "id_Alumno")
 	private Alumno alumno;
 
 	@ManyToOne
-	@JsonBackReference// Indico que es la referencia de retorno(evitando ciclo infinito)
-	@JoinColumn(name = "id_RedSocial", insertable = true, nullable = false, updatable = false)
+	@JsonBackReference(value="redSocial")
+	@JoinColumn(name = "id_RedSocial")
 	private RedSocial redSocial;
 	
 

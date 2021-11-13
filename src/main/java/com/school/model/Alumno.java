@@ -34,10 +34,9 @@ public class Alumno extends Persona implements Serializable {
 	private Long id_Alumno;
 
 	@OneToMany(mappedBy = "alumno")
-	private List<AlumnoRRSS> listaRedes;
+	private List<AlumnoRRSS> redesSocialAlumno;
 
 	@ManyToMany
-	@JsonManagedReference
 	private List<Curso> cursos = new ArrayList<>();
 
 }
