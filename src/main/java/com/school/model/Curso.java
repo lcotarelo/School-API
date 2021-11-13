@@ -35,11 +35,11 @@ public class Curso implements Serializable {
 
 	private String descripcion;
 
-	@JsonBackReference
+	@JsonBackReference(value="alumno_curso")
 	@ManyToMany(mappedBy = "cursos")
 	private Set<Alumno> alumnos;
 
-	@JsonBackReference
+	@JsonBackReference(value="profesor_curso")
 	@ManyToMany(mappedBy = "cursodictado")
 	private Set<Profesor> profesores;
 
