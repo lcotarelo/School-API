@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.school.error.CustomError;
 import com.school.model.RedSocial;
-import com.school.service.RedSocialService;
+import com.school.service.RedSocialServiceImpl;
 
 @RestController
 @RequestMapping(value="/v1/api/redessociales")
 public class RedSocialController {
 
 	@Autowired
-	private RedSocialService redSocialService;
+	private RedSocialServiceImpl redSocialService;
 	
 	@GetMapping
 	public ResponseEntity<List<RedSocial>> getRedesSociales(

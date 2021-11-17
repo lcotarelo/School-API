@@ -30,7 +30,7 @@ public class CursoController {
 	CursoService cursoService;
 
 	@GetMapping
-	public ResponseEntity<List<Curso>> getAllCursos(@RequestParam(value = "name", required = false) String name) {
+	public ResponseEntity<List<Curso>> getAllCursos(@RequestParam(value = "name", required = false) String name) throws Exception {
 		List<Curso> cursos = new ArrayList<>();
 
 		if (name == null) {
@@ -51,7 +51,7 @@ public class CursoController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Curso> getCursoById(@PathVariable(value = "id") Long id_Curso) {
+	public ResponseEntity<Curso> getCursoById(@PathVariable(value = "id") Long id_Curso) throws Exception {
 
 		if (id_Curso == null || id_Curso <= 0) {
 			return new ResponseEntity(new CustomError("No se ingreso un ID valido"), HttpStatus.NOT_FOUND);
@@ -64,7 +64,7 @@ public class CursoController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Curso> addCurso(@RequestBody Curso curso,	UriComponentsBuilder uriComponentsBuilder) {
+	public ResponseEntity<Curso> addCurso(@RequestBody Curso curso,	UriComponentsBuilder uriComponentsBuilder) throws Exception {
 		
 		if(curso.getNombre_Curso()==null){
 			return new ResponseEntity(new CustomError("Error: Campo nombre vacio"), HttpStatus.CONFLICT);
@@ -72,7 +72,7 @@ public class CursoController {
 		if(curso.getNombre_Curso().equals(cursoService.getByName(curso.getNombre_Curso()))){
 			return new ResponseEntity(new CustomError("Error: Este curso ya existe"), HttpStatus.CONFLICT);
 		}
-		
+ 
 		cursoService.create(curso);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(

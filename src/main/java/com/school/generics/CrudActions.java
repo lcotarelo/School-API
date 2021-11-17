@@ -10,12 +10,12 @@ public interface CrudActions<T , ID> {
 	
 	T getById(ID id) throws Exception;
 	
-	List<T> getByName(String name);
+	List<T> getByName(String name) throws Exception;
 	
-	List<T> getAll();
+	List<T> getAll() throws Exception;
 	
-	void update(T ob);
+	void update(T ob) throws Exception;
 	
-	void remove(ID id);
+	void remove(ID id) throws Exception;
 
 }

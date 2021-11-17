@@ -19,14 +19,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.school.error.CustomError;
 import com.school.model.Profesor;
-import com.school.service.ProfesorService;
+import com.school.service.ProfesorServiceImpl;
 
 @RestController
 @RequestMapping(value="/v1/api/profesores")
 public class ProfesorController {
 
 	@Autowired
-	ProfesorService profesorService;
+	ProfesorServiceImpl profesorService;
 
 	// busqueda de todos los profesores o por nombre con param
 	@GetMapping
