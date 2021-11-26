@@ -9,7 +9,5 @@ import com.school.model.RedSocial;
 
 public interface AlumnoService extends CrudActions<Alumno , Long> {
 	
-	List<RedSocial> getRedSocialByID(Long idRed);
-	
-	void insertCursoInAlumno(Alumno alumno, List<Curso> curso) throws Exception;
+	List<Curso> getCursosfromAlumno(Long idAlumno) throws Exception;
 }

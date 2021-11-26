@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
+import com.school.model.Alumno;
 import com.school.model.Curso;
 
 @Repository
@@ -17,7 +18,13 @@ public class CursoRepository {
 	private EntityManager entityManager;
 
 	@Transactional
-	public void insertWithEntityManager(Curso curso) {
+	public void insertWithEntityManager(Curso curso) throws Exception {
+		if (curso == null) {
+			throw new Exception("No se ha enviado el alumno");
+		}
+		if (curso.getNombre_Curso().equals(null) || curso.getDescripcion().equals(null)) {
+			throw new Exception("Los campos no pueden estar vacios");
+		}
 		entityManager.persist(curso);
 	}
 
@@ -32,23 +39,30 @@ public class CursoRepository {
 	}
 
 	@Transactional
-	public List<Curso> findByName(String name) {
-		return (List<Curso>) entityManager.createQuery("from Curso where nombre_curso = :name")
+	public List<Curso> findByName(String name) throws Exception {
+		List<Curso> cursos = entityManager.createQuery("from Curso where nombre_curso =:name")
 				.setParameter("name", name).getResultList();
+		if (cursos.size() <= 0) {
+			throw new Exception("No hay cursos registrados");
+		}
+		return cursos;
 	}
 
 	@Transactional
-	public void updateCurso(Curso curso) {
+	public void updateCurso(Curso curso) throws Exception {
+		if (curso == null) {
+			throw new Exception("No se encontro el curso");
+		}
 		entityManager.merge(curso);
 	}
 
 	@Transactional
-	public void removeCursoById(Long id) {
+	public void removeCursoById(Long id) throws Exception {
 		Curso curso = getCursoByIdWithEntityManager(id);
-		try {
+		if (curso != null) {
 			entityManager.remove(curso);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
+			throw new Exception("Ocurrio un problema en el borrado del alumno");
 		}
 	}
 

@@ -36,7 +36,15 @@ public class AlumnoRepository {
 		if (dni.equals(null) || dni.equals("")) {
 			throw new Exception("No se envio un DNI");
 		}
-		return entityManager.find(Alumno.class, dni);
+		Alumno alumno = null;
+		try {
+			return alumno = entityManager.createQuery("SELECT a from Alumno a WHERE a.dni = :dni", Alumno.class)
+					.setParameter("dni", dni).getSingleResult();
+		} catch (Exception e) {
+			e.getMessage();
+			System.out.println("No encuentra el alumno con el dni ");
+		}
+		return alumno;
 	}
 
 	@Transactional
@@ -45,21 +53,31 @@ public class AlumnoRepository {
 			throw new Exception("No se envio un ID");
 		}
 		return entityManager.find(Alumno.class, id);
+
 	}
 
 	@Transactional
 	public List<Alumno> findAllAlumnos() throws Exception {
 		List<Alumno> alumnos = entityManager.createQuery("from Alumno").getResultList();
-		if(alumnos.size()<=0) {
+		if (alumnos.size() <= 0) {
 			throw new Exception("No hay alumnos registrados");
 		}
 		return alumnos;
 	}
 
 	@Transactional
+	public List<Curso> findCursosInAlumno(Long idAlumno) throws Exception {
+		List<Curso> cursos = entityManager.createNativeQuery(
+				"SELECT c.ID_CURSO ,c.DESCRIPCION ,c.NOMBRE_CURSO  FROM ALUMNO_CURSOS ac inner join Curso c on ac.CURSOS_ID_CURSO =c.ID_Curso where ac.ALUMNOS_ID_ALUMNO  =:idAlumno")
+				.setParameter("idAlumno", idAlumno).getResultList();
+		return cursos;
+	}
+
+	@Transactional
 	public List<Alumno> findByName(String name) throws Exception {
-		List<Alumno> alumnos = entityManager.createQuery("from Alumno where nombre = :name").setParameter("name", name).getResultList();
-		if(alumnos.size()<=0) {
+		List<Alumno> alumnos = entityManager.createQuery("from Alumno where nombre like %:name%")
+				.setParameter("name", name).getResultList();
+		if (alumnos.size() <= 0) {
 			throw new Exception("No hay alumnos con el nombre");
 		}
 		return alumnos;
@@ -67,7 +85,7 @@ public class AlumnoRepository {
 
 	@Transactional
 	public void updateAlumno(Alumno alumno) throws Exception {
-		if(alumno == null) {
+		if (alumno == null) {
 			throw new Exception("No hay alumno para actualizar");
 		}
 		entityManager.merge(alumno);
@@ -75,11 +93,11 @@ public class AlumnoRepository {
 
 	@Transactional
 	public void removeAlumnoById(Long id) throws Exception {
-		try {
-			Alumno alumno = getAlumnoByIdWithEntityManager(id);
+		Alumno alumno = getAlumnoByIdWithEntityManager(id);
+		if (alumno != null) {
 			entityManager.remove(alumno);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
+			throw new Exception("Ocurrio un problema en el borrado del alumno");
 		}
 	}
 

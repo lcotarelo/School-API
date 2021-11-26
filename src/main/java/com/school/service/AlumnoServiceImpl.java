@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.school.model.Alumno;
 import com.school.model.Curso;
-import com.school.model.RedSocial;
 import com.school.repository.AlumnoRepository;
 
 @Service
@@ -41,18 +40,19 @@ public class AlumnoServiceImpl implements AlumnoService {
 		return alumnoRepository.findByName(name);
 	}
 
+	public Alumno getByDni(String dni) throws Exception{
+		return alumnoRepository.getAlumnoByDniWithEntityManager(dni);
+	}
 	@Override
 	public void update(Alumno alumno) throws Exception {
 		alumnoRepository.updateAlumno(alumno);
 	}
 
 	@Override
-	public List<RedSocial> getRedSocialByID(Long idRed) {
-		return null;
+	public List<Curso> getCursosfromAlumno(Long idAlumno) throws Exception {
+		return alumnoRepository.findCursosInAlumno(idAlumno);
 	}
 
-	@Override
-	public void insertCursoInAlumno(Alumno alumno, List<Curso> cursos) throws Exception {
-	}
+
 
 }
