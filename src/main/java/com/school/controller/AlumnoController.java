@@ -20,9 +20,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.school.error.CustomError;
 import com.school.model.Alumno;
+import com.school.model.AlumnoRRSS;
 import com.school.model.Curso;
+import com.school.model.RedSocial;
+import com.school.service.AlumnoRRSSServiceImpl;
 import com.school.service.AlumnoServiceImpl;
 import com.school.service.CursoServiceImpl;
+import com.school.service.RedSocialServiceImpl;
 
 @RestController
 @RequestMapping(value = "/v1/api/alumnos")
@@ -30,9 +34,15 @@ public class AlumnoController {
 
 	@Autowired
 	AlumnoServiceImpl alumnoServiceImpl;
-	
+
 	@Autowired
 	CursoServiceImpl cursoServiceImpl;
+
+	@Autowired
+	RedSocialServiceImpl redSocialServiceImpl;
+
+	@Autowired
+	AlumnoRRSSServiceImpl alumnoRRSSServiceImpl;
 
 	// busqueda de todos los alumnos o por nombre con param
 	@GetMapping
@@ -115,6 +125,29 @@ public class AlumnoController {
 				.email(alumno.getEmail()).id_Alumno(idAlumno).build();
 		alumnoServiceImpl.update(alumnoAux);
 		return new ResponseEntity<Alumno>(alumno, HttpStatus.OK);
+	}
+
+	// Agregar RedSocial en alumno
+	@PostMapping(value = "/{idAlumno}/rrss/{idRRSS}")
+	public ResponseEntity<AlumnoRRSS> addRRSSintoAlumno(
+			@RequestParam(value = "nickname", required = false) String nickname,
+			@PathVariable(value = "idAlumno") Long idAlumno, 
+			@PathVariable(value = "idRRSS") Long idRRSS)
+			throws Exception {
+		Alumno alumno = alumnoServiceImpl.getById(idAlumno);
+		RedSocial rrss = redSocialServiceImpl.getById(idRRSS);
+		List<AlumnoRRSS> redes = alumno.getRedesSocialAlumno();
+		if(alumno == null ) {
+			return new ResponseEntity(new CustomError("El alumno no existe"),HttpStatus.NO_CONTENT);
+		}
+		if(rrss == null ) {
+			return new ResponseEntity(new CustomError("La red social no existe"),HttpStatus.NO_CONTENT);
+		}
+		AlumnoRRSS alumnoRRSS = AlumnoRRSS.builder().alumno(alumno).nickname(nickname).redSocial(rrss).build();
+		alumnoRRSSServiceImpl.create(alumnoRRSS);
+		redes.add(alumnoRRSS);
+		alumno.setRedesSocialAlumno(redes);
+		return new ResponseEntity<AlumnoRRSS>(alumnoRRSS, HttpStatus.OK);
 	}
 
 	// Agregar curso en alumno

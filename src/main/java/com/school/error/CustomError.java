@@ -10,9 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomError {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
 	private String mensaje;
 }
