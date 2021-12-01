@@ -31,6 +31,10 @@ import com.school.service.AlumnoServiceImpl;
 import com.school.service.CursoServiceImpl;
 import com.school.service.RedSocialServiceImpl;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping(value = "/v1/api/alumnos")
 public class AlumnoController {
@@ -49,6 +53,11 @@ public class AlumnoController {
 
 	// busqueda de todos los alumnos o por nombre con param
 	@GetMapping
+	@ApiOperation("Devuelve todos los alumnos si no se agrega el parametro name")
+	@ApiResponses({
+		@ApiResponse(code= 200 , message = "Ok!"),
+		@ApiResponse(code= 404 , message = "No se encuentra el alumno!"),
+	})
 	public ResponseEntity<List<Alumno>> getAlumnos(@RequestParam(value = "name", required = false) String name)
 			throws Exception {
 		List<Alumno> alumnos = new ArrayList<>();
@@ -56,7 +65,7 @@ public class AlumnoController {
 		if (name == null) {
 			alumnos = alumnoServiceImpl.getAll();
 			if (alumnos.isEmpty()) {
-				return new ResponseEntity(new CustomError("No existen alumnos"), HttpStatus.CONFLICT);
+				return new ResponseEntity(new CustomError("No existen alumnos"), HttpStatus.NOT_FOUND);
 			}
 			return new ResponseEntity<List<Alumno>>(alumnos, HttpStatus.OK);
 		} else {
