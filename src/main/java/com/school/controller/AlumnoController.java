@@ -3,6 +3,9 @@ package com.school.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -79,6 +82,7 @@ public class AlumnoController {
 		return new ResponseEntity<Alumno>(alumno, HttpStatus.OK);
 	}
 
+	//Get Cursos de alumno
 	@GetMapping(value = "/{idAlumno}/cursos/")
 	public ResponseEntity<?> getCursoInAlumno(@PathVariable(value = "idAlumno") Long idAlumno) throws Exception {
 
@@ -129,25 +133,38 @@ public class AlumnoController {
 
 	// Agregar RedSocial en alumno
 	@PostMapping(value = "/{idAlumno}/rrss/{idRRSS}")
-	public ResponseEntity<AlumnoRRSS> addRRSSintoAlumno(
-			@RequestParam(value = "nickname", required = false) String nickname,
-			@PathVariable(value = "idAlumno") Long idAlumno, 
-			@PathVariable(value = "idRRSS") Long idRRSS)
+	public ResponseEntity<Alumno> addRRSSintoAlumno(@RequestParam(value = "nickname", required = false) String nickname,
+			@PathVariable(value = "idAlumno") Long idAlumno, @PathVariable(value = "idRRSS") Long idRRSS)
 			throws Exception {
 		Alumno alumno = alumnoServiceImpl.getById(idAlumno);
 		RedSocial rrss = redSocialServiceImpl.getById(idRRSS);
 		List<AlumnoRRSS> redes = alumno.getRedesSocialAlumno();
-		if(alumno == null ) {
-			return new ResponseEntity(new CustomError("El alumno no existe"),HttpStatus.NO_CONTENT);
-		}
-		if(rrss == null ) {
-			return new ResponseEntity(new CustomError("La red social no existe"),HttpStatus.NO_CONTENT);
-		}
+
 		AlumnoRRSS alumnoRRSS = AlumnoRRSS.builder().alumno(alumno).nickname(nickname).redSocial(rrss).build();
 		alumnoRRSSServiceImpl.create(alumnoRRSS);
 		redes.add(alumnoRRSS);
 		alumno.setRedesSocialAlumno(redes);
-		return new ResponseEntity<AlumnoRRSS>(alumnoRRSS, HttpStatus.OK);
+		return new ResponseEntity<Alumno>(alumno, HttpStatus.OK);
+	}
+
+	//Get Cursos de alumno
+	@GetMapping(value = "/{idAlumno}/rrss/")
+	public ResponseEntity<List<AlumnoRRSS>> getRRSSInAlumno(@PathVariable(value = "idAlumno") Long idAlumno) throws Exception {
+
+		if (idAlumno == null) {
+			return new ResponseEntity("No se ingreso un id", HttpStatus.NOT_FOUND);
+		}
+		if (alumnoServiceImpl.getById(idAlumno) == null) {
+			return new ResponseEntity("No existe el alumno", HttpStatus.NOT_FOUND);
+		}
+		if (alumnoServiceImpl.getById(idAlumno) != null) {
+			List<AlumnoRRSS> alumnoRRSS = alumnoRRSSServiceImpl.getRedesfromAlumno(idAlumno);
+			if(alumnoRRSS.isEmpty()) {
+				return new ResponseEntity("No se encuentra ninguna red social asociada al alumno de id "+idAlumno, HttpStatus.NOT_FOUND);
+			}
+			return new ResponseEntity<List<AlumnoRRSS>>(alumnoRRSS, HttpStatus.OK);
+		}
+		return null;
 	}
 
 	// Agregar curso en alumno
