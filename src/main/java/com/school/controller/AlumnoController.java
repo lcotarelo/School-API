@@ -54,10 +54,8 @@ public class AlumnoController {
 	// busqueda de todos los alumnos o por nombre con param
 	@GetMapping
 	@ApiOperation("Devuelve todos los alumnos si no se agrega el parametro name")
-	@ApiResponses({
-		@ApiResponse(code= 200 , message = "Ok!"),
-		@ApiResponse(code= 404 , message = "No se encuentra el alumno!"),
-	})
+	@ApiResponses({ @ApiResponse(code = 200, message = "Ok!"),
+			@ApiResponse(code = 404, message = "No se encuentra el alumno!"), })
 	public ResponseEntity<List<Alumno>> getAlumnos(@RequestParam(value = "name", required = false) String name)
 			throws Exception {
 		List<Alumno> alumnos = new ArrayList<>();
@@ -91,7 +89,7 @@ public class AlumnoController {
 		return new ResponseEntity<Alumno>(alumno, HttpStatus.OK);
 	}
 
-	//Get Cursos de alumno
+	// Get Cursos de alumno
 	@GetMapping(value = "/{idAlumno}/cursos/")
 	public ResponseEntity<?> getCursoInAlumno(@PathVariable(value = "idAlumno") Long idAlumno) throws Exception {
 
@@ -106,6 +104,20 @@ public class AlumnoController {
 			return new ResponseEntity<List<Curso>>(cursos, HttpStatus.OK);
 		}
 		return null;
+	}
+
+	// Delete curso de alumno
+	@DeleteMapping(value = "/{idAlumno}/cursos/{idCurso}")
+	public ResponseEntity<?> removeCursoInAlumno(@PathVariable(value = "idAlumno") Long idAlumno,
+			@PathVariable(value = "idCurso") Long idCurso) throws Exception {
+		Alumno alumno = alumnoServiceImpl.getById(idAlumno);
+		if (alumno == null)
+			return new ResponseEntity("El alumno de id " + idAlumno + " no existe ", HttpStatus.NOT_FOUND);
+		if(idCurso == null || idCurso <=0)
+			return new ResponseEntity("No se ingreso un id de curso valido", HttpStatus.NOT_FOUND);
+		
+			alumnoServiceImpl.removeCursoInAlumno(idAlumno, idCurso);
+			return new ResponseEntity("Se ha eliminado el curso " + idCurso + " del alumno " + idAlumno, HttpStatus.OK);
 	}
 
 	// Insercion de nuevo alumno
@@ -156,9 +168,10 @@ public class AlumnoController {
 		return new ResponseEntity<Alumno>(alumno, HttpStatus.OK);
 	}
 
-	//Get Cursos de alumno
+	// Get Cursos de alumno
 	@GetMapping(value = "/{idAlumno}/rrss/")
-	public ResponseEntity<List<AlumnoRRSS>> getRRSSInAlumno(@PathVariable(value = "idAlumno") Long idAlumno) throws Exception {
+	public ResponseEntity<List<AlumnoRRSS>> getRRSSInAlumno(@PathVariable(value = "idAlumno") Long idAlumno)
+			throws Exception {
 
 		if (idAlumno == null) {
 			return new ResponseEntity("No se ingreso un id", HttpStatus.NOT_FOUND);
@@ -168,8 +181,9 @@ public class AlumnoController {
 		}
 		if (alumnoServiceImpl.getById(idAlumno) != null) {
 			List<AlumnoRRSS> alumnoRRSS = alumnoRRSSServiceImpl.getRedesfromAlumno(idAlumno);
-			if(alumnoRRSS.isEmpty()) {
-				return new ResponseEntity("No se encuentra ninguna red social asociada al alumno de id "+idAlumno, HttpStatus.NOT_FOUND);
+			if (alumnoRRSS.isEmpty()) {
+				return new ResponseEntity("No se encuentra ninguna red social asociada al alumno de id " + idAlumno,
+						HttpStatus.NOT_FOUND);
 			}
 			return new ResponseEntity<List<AlumnoRRSS>>(alumnoRRSS, HttpStatus.OK);
 		}

@@ -40,9 +40,10 @@ public class AlumnoServiceImpl implements AlumnoService {
 		return alumnoRepository.findByName(name);
 	}
 
-	public Alumno getByDni(String dni) throws Exception{
+	public Alumno getByDni(String dni) throws Exception {
 		return alumnoRepository.getAlumnoByDniWithEntityManager(dni);
 	}
+
 	@Override
 	public void update(Alumno alumno) throws Exception {
 		alumnoRepository.updateAlumno(alumno);
@@ -53,6 +54,7 @@ public class AlumnoServiceImpl implements AlumnoService {
 		return alumnoRepository.findCursosInAlumno(idAlumno);
 	}
 
-
-
+	public void removeCursoInAlumno(Long idAlumno, Long idCurso)throws Exception{
+		alumnoRepository.removeCursoInAlumno(idAlumno, idCurso);
+	}
 }

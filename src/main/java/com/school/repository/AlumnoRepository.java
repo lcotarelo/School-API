@@ -110,4 +110,11 @@ public class AlumnoRepository {
 			entityManager.merge(c);
 		}
 	}
+
+	@Transactional
+	public void removeCursoInAlumno(Long idAlumno, Long idCurso) {
+		entityManager.createNativeQuery("select * from ALUMNO_CURSOS where ALUMNOS_ID_ALUMNO =:idAlumno and CURSOS_ID_CURSO =:idCurso")
+				.setParameter("idAlumno", idAlumno)
+				.setParameter("idCurso", idCurso);
+	}
 }
